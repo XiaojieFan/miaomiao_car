@@ -54,10 +54,13 @@ stm32_library = 'STM32L4xx_HAL'
 rtconfig.BSP_LIBRARY_TYPE = stm32_library
 
 # include libraries
-objs.extend(SConscript(os.path.join(libraries_path_prefix, stm32_library, 'SConscript')))
-
+#objs.extend(SConscript(os.path.join(libraries_path_prefix, stm32_library, 'SConscript')))
+# include wifi library
+#objs.extend(SConscript(os.path.join(libraries_path_prefix, 'wifi', 'SConscript')))
+# include ota library
+#objs.extend(SConscript(os.path.join(libraries_path_prefix, 'rt_ota', 'SConscript')))
 # include drivers
-objs.extend(SConscript(os.path.join(libraries_path_prefix, 'HAL_Drivers', 'SConscript')))
+#objs.extend(SConscript(os.path.join(libraries_path_prefix, 'HAL_Drivers', 'SConscript')))
 
 # make a building
 DoBuilding(TARGET, objs)

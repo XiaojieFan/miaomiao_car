@@ -10,7 +10,9 @@ src = Split("""
 
 if GetDepend(['RT_USING_PIN']):
     src += ['drv_gpio.c']
-    
+# add flash driver code
+if GetDepend('BSP_USING_FLASH'):
+    src = src + ['drv_qspi_flash.c']
 if GetDepend(['RT_USING_SERIAL']):
     src += ['drv_usart.c']
 
@@ -38,6 +40,9 @@ if GetDepend(['RT_USING_ADC']):
 
 if GetDepend(['RT_USING_CAN']):
     src += ['drv_can.c']
+# add wlan driver code
+if GetDepend('BSP_USING_WIFI'):
+    src = src + ['drv_wlan.c']
 
 if GetDepend(['RT_USING_PM', 'SOC_SERIES_STM32L4']):
     src += ['drv_pm.c']
@@ -71,7 +76,7 @@ if GetDepend(['BSP_USING_WDT']):
     src += ['drv_wdt.c']
 
 if GetDepend(['BSP_USING_SDIO']):
-    src += ['drv_sdio.c']
+    src += ['drv_sdio_adapter.c']
 
 if GetDepend(['BSP_USING_USBD_FS']):
     src += ['drv_usbd_fs.c']
@@ -80,6 +85,7 @@ src += ['drv_common.c']
 
 path =  [cwd]
 path += [cwd + '/config']
+path += [cwd + '/../rt_ota/inc']
 
 if GetDepend('BSP_USING_ON_CHIP_FLASH'):
     path += [cwd + '/drv_flash']

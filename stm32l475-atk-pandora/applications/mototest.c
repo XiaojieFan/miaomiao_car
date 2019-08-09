@@ -10,7 +10,7 @@
 #include "chassis.h"
 #include <rtdbg.h>
 
-#define THREAD_PRIORITY 5
+#define THREAD_PRIORITY 23
 #define THREAD_STACK_SIZE      1024
 #define THREAD_TIMESLICE        5
 static rt_thread_t tid1 = RT_NULL;
@@ -53,13 +53,13 @@ static rt_thread_t tid1 = RT_NULL;
 float kp = 0.5;
 float ki = 0;
 float kd = 0;
-
+chassis_t chas;
 static void motor_entry(void *parameter)
 {
 	rt_uint32_t count = 0;
 	motor_t letf_moto = RT_NULL;
 	motor_t right_moto = RT_NULL;
-	chassis_t chas;
+	//chassis_t chas;
 	struct velocity target_vel;
 	// 1. Initialize two wheels - left and right
 wheel_t* c_wheels = (wheel_t*) rt_malloc(sizeof(wheel_t) * 4);
@@ -117,7 +117,7 @@ encoder_set_sample_time(chas->c_wheels[3]->w_encoder, SAMPLE_TIME);
 // 4. Enable Chassis
 chassis_enable(chas);
 // Turn left
-target_vel.linear_x = 0;   // m/s
+/*target_vel.linear_x = 0;   // m/s
 target_vel.linear_y = 0;    // m/s
 target_vel.angular_z = PI / 4; // rad/s
 
@@ -138,11 +138,9 @@ rt_thread_mdelay(500);
 target_vel.linear_x = 0.06;   // m/s
 target_vel.linear_y = 0;    // m/s
 target_vel.angular_z = 0;
-while(1)
-{
+
  chassis_set_velocity(chas, target_vel);
  rt_thread_mdelay(500);
-}
 // Stop
 target_vel.linear_x = 0.0;   // m/s
 target_vel.linear_y = 0;    // m/s
@@ -150,15 +148,99 @@ target_vel.angular_z = 0; // rad/s
 
 chassis_set_velocity(chas, target_vel);
 rt_thread_mdelay(500);
-
+*/
 while(1)
 {
-    chassis_update(chas);
-    rt_thread_mdelay(50);
-}
+   // chassis_update(chas);
+    rt_thread_mdelay(1500);
 
 }
+}
+void stop(void)
+{
+	struct velocity target_vel;
+	target_vel.linear_x = 0.0;   // m/s
+  target_vel.linear_y = 0;    // m/s
+  target_vel.angular_z = 0; // rad/s
 
+  chassis_set_velocity(chas, target_vel);
+   rt_thread_mdelay(500);
+}
+
+MSH_CMD_EXPORT(stop, moto stop);
+void left(void)
+{
+struct velocity target_vel;
+	// Turn left
+target_vel.linear_x = 0.06;   // m/s
+target_vel.linear_y = 0;    // m/s
+target_vel.angular_z = PI / 4; // rad/s
+
+chassis_set_velocity(chas, target_vel);
+rt_thread_mdelay(400);
+		stop();
+}
+MSH_CMD_EXPORT(left, moto left);
+void right(void)
+{
+struct velocity target_vel;
+// Turn right
+target_vel.linear_x = 0.06;   // m/s
+target_vel.linear_y = 0;    // m/s
+target_vel.angular_z = - PI / 4; // rad/s
+
+
+chassis_set_velocity(chas, target_vel);
+rt_thread_mdelay(400);
+	stop();
+}
+MSH_CMD_EXPORT(right, moto right);
+void run(void)
+{
+struct velocity target_vel;
+// Go straight
+target_vel.linear_x = 0.08;   // m/s
+target_vel.linear_y = 0;    // m/s
+target_vel.angular_z = 0;
+
+ chassis_set_velocity(chas, target_vel);
+ rt_thread_mdelay(500);
+ 
+}
+MSH_CMD_EXPORT(run, moto straight);
+void back(void)
+{
+struct velocity target_vel;
+// Go straight
+target_vel.linear_x = -0.08;   // m/s
+target_vel.linear_y = 0;    // m/s
+target_vel.angular_z = 0;
+
+ chassis_set_velocity(chas, target_vel);
+ rt_thread_mdelay(500);
+}
+MSH_CMD_EXPORT(back, moto back);
+
+void cycle(void)
+{
+	run();
+	rt_thread_mdelay(1000);
+	rt_thread_mdelay(1000);
+	left();
+	run();
+	rt_thread_mdelay(1000);
+	rt_thread_mdelay(1000);
+	left();
+	run();
+	rt_thread_mdelay(1000);
+	rt_thread_mdelay(1000);
+	left();
+	run();
+	rt_thread_mdelay(1000);
+	rt_thread_mdelay(1000);
+	stop();	
+}
+MSH_CMD_EXPORT(cycle, cycle test);
 void moto_sample(void)
 {
 	
@@ -173,3 +255,4 @@ void moto_sample(void)
 }
 
 MSH_CMD_EXPORT(moto_sample, moto test);
+

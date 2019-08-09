@@ -41,7 +41,8 @@ struct pin_irq_map
     rt_uint16_t pinbit;
     IRQn_Type irqno;
 };
-
+// WiFi IRQ
+#define PIN_WIFI_IRQ  37        // PC5 :  WIFI_INT     --> WIFI
 int rt_hw_pin_init(void);
 
 #endif /* __DRV_GPIO_H__ */
