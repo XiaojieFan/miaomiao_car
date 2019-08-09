@@ -47,14 +47,10 @@ documentation/html
 
 *.d
 .DS_Stor
-*
-.config 
-3
-.config
-4
-.config 
-5
-Midea-X1
+*.config 
+3.config
+4.config 
+5Midea-X1
 *.uimg
 GPATH
 GRTAGS
@@ -65,8 +61,7 @@ JLinkLog.txt
 
 JLinkSettings.ini
 
-DebugConfig
-/
+DebugConfig/
 RTE/
 settings/
 
